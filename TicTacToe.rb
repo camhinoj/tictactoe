@@ -16,7 +16,7 @@ class TicTacToe
 			@board.display
 			if @board.check_win
 				puts "Player #{player_tracker.name} has Won!!"
-				break
+				return true
 			else
 				if player_tracker == @player1
 					player_tracker = @player2
@@ -26,8 +26,6 @@ class TicTacToe
 			end
 			puts "Player #{player_tracker.name}'s turn"
 		end
-		"Reseting board for another game"
-		@board = Board.new
 	end
 
 
@@ -42,14 +40,14 @@ class TicTacToe
 				@cells[("cell"+i.to_s).intern] = " "
 				i += 1
 			end
-			@column1 = [@cells[:cell1], @cells[:cell4], @cells[:cell7]]
-			@column2 = [@cells[:cell2], @cells[:cell5], @cells[:cell8]]
-			@column3 = [@cells[:cell3], @cells[:cell6], @cells[:cell9]]
-			@row1 = [@cells[:cell1], @cells[:cell2], @cells[:cell3]]
-			@row2 = [@cells[:cell4], @cells[:cell5], @cells[:cell6]]
-			@row3 = [@cells[:cell7], @cells[:cell8], @cells[:cell9]]
-			@diag1 = [@cells[:cell1], @cells[:cell5], @cells[:cell9]]
-			@diag2 = [@cells[:cell3], @cells[:cell5], @cells[:cell8]]
+			@column1 = [:cell1, :cell4, :cell7]
+			@column2 = [:cell2, :cell5, :cell8]
+			@column3 = [:cell3, :cell6, :cell9]
+			@row1 = [:cell1, :cell2, :cell3]
+			@row2 = [:cell4, :cell5, :cell6]
+			@row3 = [:cell7, :cell8, :cell9]
+			@diag1 = [:cell1, :cell5, :cell9]
+			@diag2 = [:cell3, :cell5, :cell8]
 			@rows = [@row1, @row2, @row3]
 			@columns = [@column1, @column2, @column3]
 			@diags = [@diag1, @diag2]
@@ -57,7 +55,7 @@ class TicTacToe
 		end
 
 		def init_display
-			puts
+			puts ""
 			@rows.each_with_index do |row, ind|
 				if ind == 0
 					adder = 0
@@ -73,7 +71,7 @@ class TicTacToe
 						print (index + 1 + adder).to_s + " | " 
 					end
 				end
-				puts
+				puts ""
 				puts ind == @rows.size - 1 ? " " : "---------"
 			end
 		end
@@ -109,41 +107,26 @@ class TicTacToe
 		end
 
 		def check_win
-			win = false
 			@rows.each do |row|
-				if row.count { |x| x == "X" } == 3
-					win = true
-					return win
-				elsif row.count { |x| x == "O" } == 3
-					win = true
-					return win
-				else
-					next
-				end
+				return true if check_array row
 			end
 			@columns.each do |column|
-				if column.count { |x| x == "X" } == 3
-					win = true
-					return win
-				elsif column.count { |x| x == "O" } == 3
-					win = true
-					return win
-				else
-					next
-				end
+				return true if check_array column
 			end
 			@diags.each do |diag|
-				if diag.count { |x| x == "X" } == 3
-					win = true
-					return win
-				elsif diag.count { |x| x == "O" } == 3
-					win = true
-					return win
-				else
-					next
-				end
+				return true if check_array diag
 			end
-			return win
+			return false
+		end
+
+		def check_array(three_array)
+			if three_array.all? { |cell| @cells[cell] == "X" }
+				return true
+			elsif three_array.all? { |cell| @cells[cell] == "O" }
+				return true
+			else
+				return false
+			end
 		end
 	end
 end
